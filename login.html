@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Velo Foundry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <div class="container page-title">
+      <h1>Login</h1>
+      <p>Enter your email or mobile number and the demo password <strong>1</strong>.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container login-wrap">
+        <form id="loginForm" class="form-panel" action="#" method="post" novalidate>
+          <div class="field">
+            <label for="emailOrMobile">Email or mobile</label>
+            <input id="emailOrMobile" name="emailOrMobile" type="text" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="login-pass">Password</label>
+            <input id="login-pass" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <p id="errorMessage" class="form-error" role="alert" aria-live="polite"></p>
+          <button type="submit" class="btn">Login</button>
+          <p class="form-note">Demo password is <strong>1</strong>. Not secure—client-side only.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>&copy; Velo Foundry</span>
+      <a href="index.html">Back to home</a>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    function isEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function isPhoneNumber(value) {
+      var cleaned = value.replace(/[\s\-\(\)]/g, '');
+      return /^\d{7,15}$/.test(cleaned);
+    }
+
+    function showError(el, msg) {
+      el.textContent = msg;
+    }
+
+    function clearError(el) {
+      el.textContent = '';
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var errorMessage = document.getElementById('errorMessage');
+      clearError(errorMessage);
+
+      var emailOrMobile = document.getElementById('emailOrMobile').value.trim();
+      var password = document.getElementById('login-pass').value;
+
+      if (!emailOrMobile) {
+        showError(errorMessage, 'Please enter email or mobile number');
+        return;
+      }
+
+      var isEmailInput = isEmail(emailOrMobile);
+      var isPhoneInput = isPhoneNumber(emailOrMobile);
+
+      if (!isEmailInput && !isPhoneInput) {
+        showError(errorMessage, 'Please enter a valid email or mobile number');
+        return;
+      }
+
+      if (password !== '1') {
+        showError(errorMessage, 'Incorrect password.');
+        return;
+      }
+
+      var identifier = emailOrMobile;
+      var identifyData = {};
+      if (isEmailInput) {
+        identifyData.email = identifier;
+      } else {
+        identifyData.phone = identifier;
+      }
+
+      localStorage.setItem('ax_user_identifier', identifier);
+      localStorage.setItem('ax_user_logged_in', 'true');
+      if (isEmailInput) {
+        localStorage.setItem('ax_user_email', identifier);
+        localStorage.removeItem('ax_user_phone');
+      } else {
+        localStorage.setItem('ax_user_phone', identifier);
+        localStorage.removeItem('ax_user_email');
+      }
+
+      var distinctId = getDistinctId();
+
+      var retryCount = 0;
+      var maxRetries = 50;
+
+      function sendLoginTracking() {
+        var sdkReady = window.aixelSDKReady || (window.aixel && window.aixel.identify && window.aixel.track);
+
+        if (sdkReady) {
+          try {
+            if (distinctId) {
+              window.aixel.identify(distinctId, identifyData);
+              localStorage.setItem('ax_distinct_id', distinctId);
+            }
+
+            var loginData = {};
+            if (isEmailInput) {
+              loginData.email = identifier;
+            } else {
+              loginData.phone = identifier;
+            }
+            window.aixel.track('login', loginData);
+
+
+            setTimeout(function () {
+              window.location.href = 'index.html';
+            }, 1000);
+          } catch (err) {
+            console.error('Error sending login tracking:', err);
+            setTimeout(function () {
+              window.location.href = 'index.html';
+            }, 500);
+          }
+        } else {
+          retryCount += 1;
+          if (retryCount < maxRetries) {
+            setTimeout(sendLoginTracking, 100);
+          } else {
+            console.warn('SDK not ready after max retries, redirecting anyway');
+            setTimeout(function () {
+              window.location.href = 'index.html';
+            }, 500);
+          }
+        }
+      }
+
+      sendLoginTracking();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Velo Foundry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="logo">Velo Foundry</a>
+      <nav class="nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="contact.html" class="nav__link--active">Contact</a></li>
+          <li><a class="logout" href="login.html">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container page-title">
+      <h1>Contact</h1>
+      <p>Visit the shop, call, or send a message—we will get back to you as soon as we can.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container split">
+        <div class="contact-block">
+          <h2>Shop details</h2>
+          <p>123 Cycle Lane, Bikeville</p>
+          <p class="contact-block__gap">Phone: <a href="tel:+15551234567">(555) 123-4567</a></p>
+          <p>Email: <a href="mailto:hello@velofoundry.example">hello@velofoundry.example</a></p>
+          <p class="contact-block__gap-lg"><strong>Hours</strong></p>
+          <ul>
+            <li>Mon–Fri: 9:00 – 18:00</li>
+            <li>Sat: 9:00 – 17:00</li>
+            <li>Sun: Closed</li>
+          </ul>
+        </div>
+
+        <form id="contactForm" class="form-panel form-panel--wide" novalidate>
+          <p id="successMessage" class="form-success" role="status" style="display: none;">Thanks—we have received your message.</p>
+          <div class="form-row">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" name="first_name" type="text" autocomplete="given-name" required>
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" name="last_name" type="text" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="phone">Phone <span class="form-note">(optional)</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+          </div>
+          <div class="field">
+            <label for="contact-subject">Subject</label>
+            <input id="contact-subject" name="subject" type="text">
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message"></textarea>
+          </div>
+          <button type="button" class="btn" id="contactSendBtn">Send message</button>
+          <p class="form-note">Demo only: connect this form to your email or backend when ready.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>&copy; Velo Foundry</span>
+      <a href="booking.html">Book a visit</a>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+    <script type="text/javascript">
+        (function () {
+            var form = document.getElementById('contactForm');
+            var sendBtn = document.getElementById('contactSendBtn');
+            if (!form || !sendBtn) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+
+            function getContactFormData() {
+                var firstName = document.getElementById('firstName').value.trim();
+                var lastName = document.getElementById('lastName').value.trim();
+                var email = document.getElementById('email').value.trim();
+                var phone = document.getElementById('phone').value.trim();
+                var subject = document.getElementById('contact-subject').value.trim();
+                var message = document.getElementById('message').value.trim();
+
+                return {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone,
+                    subject: subject,
+                    message: message,
+                    distinctId: email || phone || getDistinctId(),
+                    identifyTraits: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        phone: phone
+                    },
+                    trackPayload: {
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        phone: phone,
+                        subject: subject,
+                        message: message
+                    }
+                };
+            }
+
+            function sendContactFormData(formData) {
+                var distinctId = formData.distinctId;
+                var identifyTraits = formData.identifyTraits;
+                var trackPayload = formData.trackPayload;
+                var aixel = window.aixel;
+
+                if (!aixel) {
+                    console.error('Aixel not initialized');
+                    return;
+                }
+
+                try {
+                    if (typeof aixel.identify === 'function') {
+                        aixel.identify(distinctId, identifyTraits);
+                        localStorage.setItem('ax_distinct_id', distinctId);
+                    }
+
+                    if (typeof aixel.track === 'function') {
+                        aixel.track('contact', trackPayload);
+                    } else if (Array.isArray(aixel) && typeof aixel.push === 'function') {
+                        aixel.push(['track', 'contact', trackPayload]);
+                    }
+
+                    document.getElementById('successMessage').style.display = 'block';
+                    form.reset();
+                } catch (err) {
+                    console.error('Aixel identify/track failed:', err);
+                }
+            }
+
+            function submitContact() {
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                var formData = getContactFormData();
+
+                if (formData.email) {
+                    localStorage.setItem('ax_user_email', formData.email);
+                } else {
+                    localStorage.removeItem('ax_user_email');
+                }
+                if (formData.phone) {
+                    localStorage.setItem('ax_user_phone', formData.phone);
+                } else {
+                    localStorage.removeItem('ax_user_phone');
+                }
+                if (formData.firstName) {
+                    localStorage.setItem('ax_user_first_name', formData.firstName);
+                }
+                if (formData.lastName) {
+                    localStorage.setItem('ax_user_last_name', formData.lastName);
+                }
+
+                sendContactFormData(formData);
+            }
+
+            sendBtn.addEventListener('click', submitContact);
+
+            form.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter') return;
+                if (e.target.nodeName === 'TEXTAREA') return;
+                e.preventDefault();
+                submitContact();
+            });
+        })();
+    </script>
+</body>
+</html>

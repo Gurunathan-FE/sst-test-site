@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking — Velo Foundry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="logo">Velo Foundry</a>
+      <nav class="nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="booking.html" class="nav__link--active">Booking</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a class="logout" href="login.html">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container page-title">
+      <h1>Book a visit</h1>
+      <p>Request a test ride, sizing session, or buying consultation. We will confirm by phone or email.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container">
+        <form class="form-panel" action="#" method="post" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="booking-name">Full name</label>
+              <input id="booking-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="booking-phone">Phone</label>
+              <input id="booking-phone" name="phone" type="tel" autocomplete="tel" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="booking-email">Email</label>
+            <input id="booking-email" name="email" type="email" autocomplete="email" required>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="booking-date">Preferred date</label>
+              <input id="booking-date" name="date" type="date" required>
+            </div>
+            <div class="field">
+              <label for="booking-time">Preferred time</label>
+              <select id="booking-time" name="time" required>
+                <option value="">Choose…</option>
+                <option value="10:00">10:00</option>
+                <option value="11:30">11:30</option>
+                <option value="13:00">13:00</option>
+                <option value="14:30">14:30</option>
+                <option value="16:00">16:00</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="booking-type">Appointment type</label>
+              <select id="booking-type" name="appointment_type" required>
+                <option value="">Choose…</option>
+                <option value="test-ride">Test ride</option>
+                <option value="sizing">Sizing / fit chat</option>
+                <option value="purchase">Buying consultation</option>
+                <option value="service">Service drop-off</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="booking-bike">Bike interest (optional)</label>
+              <select id="booking-bike" name="bike_interest">
+                <option value="">Any</option>
+                <option value="road">Road</option>
+                <option value="mountain">Mountain</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="electric">E-bike</option>
+                <option value="gravel">Gravel</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="booking-notes">Notes</label>
+            <textarea id="booking-notes" name="notes" placeholder="Height, current bike, models you want to try…"></textarea>
+          </div>
+
+          <button type="button" class="btn" onclick="trackBookAppointment()">Request booking</button>
+          <p class="form-note">Demo only: set <code>action</code> on this form to your server or form handler when you go live.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>&copy; Velo Foundry</span>
+      <a href="contact.html">Contact</a>
+    </div>
+  </footer>
+  <script src="common.js"></script>
+  <script>
+    function trackBookAppointment() {
+      if(window.aixel) {
+        window.aixel.track('book_appointment', {
+          name: document.getElementById('booking-name').value,
+          phone: document.getElementById('booking-phone').value,
+          email: document.getElementById('booking-email').value,
+          date: document.getElementById('booking-date').value,
+          time: document.getElementById('booking-time').value,
+          appointment_type: document.getElementById('booking-type').value,
+          bike_interest: document.getElementById('booking-bike').value,
+          notes: document.getElementById('booking-notes').value,
+        });
+      }
+    }
+  </script>
+</body>
+</html>

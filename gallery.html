@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — Velo Foundry</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="logo">Velo Foundry</a>
+      <nav class="nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="gallery.html" class="nav__link--active">Gallery</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a class="logout" href="login.html">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container page-title">
+      <h1>Gallery</h1>
+      <p>A glimpse of bikes and builds on the floor. Replace placeholders with your own photos anytime.</p>
+    </div>
+
+    <section class="section section--tight">
+      <div class="container gallery">
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Road bike showcase"><span>Road</span></div>
+          <figcaption class="gallery__caption">Lightweight road builds</figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Gravel bike showcase"><span>Gravel</span></div>
+          <figcaption class="gallery__caption">All-road &amp; gravel</figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Mountain bike showcase"><span>MTB</span></div>
+          <figcaption class="gallery__caption">Trail-ready mountain</figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Electric bike showcase"><span>E-bike</span></div>
+          <figcaption class="gallery__caption">Commuter e-bikes</figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Hybrid bike showcase"><span>Hybrid</span></div>
+          <figcaption class="gallery__caption">City &amp; hybrid</figcaption>
+        </figure>
+        <figure class="gallery__item">
+          <div class="gallery__img" role="img" aria-label="Workshop showcase"><span>Workshop</span></div>
+          <figcaption class="gallery__caption">Service &amp; custom work</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <span>&copy; Velo Foundry</span>
+      <a href="booking.html">Book a visit</a>
+    </div>
+  </footer>
+  <script src="common.js"></script>
+</body>
+</html>
