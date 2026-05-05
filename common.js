@@ -19,7 +19,7 @@
                 var a = t.createElement("script");
                 a.type = "text/javascript",
                 a.async = !0,
-                a.src = "//d3lwdfc3pm008a.cloudfront.net/web.js";
+                a.src = "<scriptURL>";
                 var c = t.getElementsByTagName("script")[0];
                 c.parentNode.insertBefore(a, c)
             }
